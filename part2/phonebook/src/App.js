@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import PhoneBookService from './services/PhoneBookService'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import Filter from './components/Filter'
@@ -13,28 +14,50 @@ const App = () => {
   const [filterText, setFilterText] = useState('')
 
   const addName = (e) => {
-    var addEntry = false;
+    var updateEntry = false;
+    var tempArr = [...persons]
+    var tempObj;
     e.preventDefault();
     for (var i=0; i<persons.length; i++){
       if (persons[i].name === newName){
-        addEntry = false;
+        updateEntry = true;
+        tempObj = persons[i]
+        tempObj.number = newNumber
         break;
       }
       else
-        addEntry = true;
+        updateEntry = false;
     }
 
-    if (addEntry){
-      var tempArr = [...persons]
-      tempArr.push({
+    if (!updateEntry){
+      
+      var tempDict = {
         name: newName,
         number: newNumber,
         id: tempArr.length+1
+      }
+      PhoneBookService.create(tempDict).then(response =>{
+        tempArr.push(tempDict)
+        setPersons(tempArr)
       })
-      setPersons(tempArr)
     }
-    else
-      window.alert(`${newName} is already added to phonebook`)
+    else{
+      PhoneBookService.update(tempObj.id, tempObj).then(response =>
+        PhoneBookService.getAll().then(response => 
+          {setPersons(response.data)}
+        ) 
+      )
+    }
+  }
+
+  const deleteEntry = (id, name) => {
+    if (window.confirm(`Delete ${name} ?`)) {
+      PhoneBookService.deleteEntry(id).then(response => 
+      PhoneBookService.getAll().then(response => 
+          {setPersons(response.data)}
+        ) 
+      )
+    }
   }
 
   const setName = (e) => {
@@ -48,11 +71,9 @@ const App = () => {
   }
 
   useEffect(() => {
-    const eventHandler = response => {
-      setPersons(response.data)
-    }
-    const promise = axios.get('http://localhost:3001/persons')
-    promise.then(eventHandler)
+    PhoneBookService.getAll().then(response => 
+      {setPersons(response.data)}
+    )
   }, [])
 
   return (
@@ -62,7 +83,7 @@ const App = () => {
       <h2>Add a new</h2>
       <PersonForm addName={addName} setName={setName} setNumber={setNumber}/>
       <h2>Numbers</h2>
-      <Persons filter={filterText} persons={persons} />
+      <Persons filter={filterText} persons={persons} deleteEntry={deleteEntry}/>
     </div>
   )
 }

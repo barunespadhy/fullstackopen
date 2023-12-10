@@ -4,7 +4,7 @@ const Persons = (props) => {
     <div>
         {
           props.persons.map(eachContact => (
-            ((eachContact.name).toLowerCase()).includes((props.filter).toLowerCase()) ? (<p key={eachContact.id}>{eachContact.name}: {eachContact.number}</p>) : ""
+            ((eachContact.name).toLowerCase()).includes((props.filter).toLowerCase()) ? (<p key={eachContact.id}>{eachContact.name}: {eachContact.number}<button onClick={() => props.deleteEntry(eachContact.id, eachContact.name)}>delete</button></p>) : ""
           ))
         }
       </div>
