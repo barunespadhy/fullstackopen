@@ -1,42 +1,14 @@
 const express = require('express')
 const morgan = require('morgan')
-const app = express()
 const cors = require('cors')
+require('dotenv').config()
 
+const app = express()
 app.use(cors())
 app.use(express.json())
 app.use(morgan("tiny"))
 app.use(express.static('frontend'))
-
-
-
-let contacts = [
-    { 
-      "id": 1,
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": 2,
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": 3,
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": 4,
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    },
-    { 
-      "id": 5,
-      "name": "Barunes Padhy", 
-      "number": "83-23-7403124"
-    }
-]
+const Contact = require("./models/phonebookModel")
 
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
@@ -50,13 +22,9 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const contact = contacts.find(contact => contact.id === id)
-  if (contact) {
-  	response.json(contact)
-  } else {
-  	response.status(404).end()
-  }
+  Contact.findById(request.params.id).then(contact => {
+    response.json(contact)
+  })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -66,14 +34,16 @@ app.delete('/api/persons/:id', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-  response.json(contacts)
+  Contact.find().then((result) => {
+      response.json(result)
+  });
 })
 
 app.post('/api/persons', (request, response) => {
   let contactObject = request.body
   let responseMessage = ""
   let errorFlag = false;
-  if (contactObject.number === ""){
+  /*if (contactObject.number === ""){
   	errorFlag = true;
   	responseMessage = 'number field cannot be empty'
   }
@@ -90,16 +60,21 @@ app.post('/api/persons', (request, response) => {
   		responseMessage = 'name field cannot be empty'
   	else
   		responseMessage = 'name and number field cannot be empty'
-  }
+  }*/
   if (errorFlag)
   	response.status(400).json({ error: responseMessage });
   else{
-  	contactObject["id"] = Math.floor(Math.random() * 1000)
-  	contacts.push(contactObject)
-  	response.status(200).end()
+    const contact = new Contact({
+      name: contactObject.name,
+      number: contactObject.number,
+    })
+  	contact.save().then((newContact) => {
+      response.json(newContact)
+    });
   }
 })
 
-const PORT = 3001
-app.listen(PORT)
-console.log(`Server running on port ${PORT}`)
+const PORT = process.env.PORT
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
