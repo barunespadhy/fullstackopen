@@ -1,7 +1,7 @@
 const listHelper = require('../utils/list_helper')
 
 
-describe('Blog Tests', () => {
+describe('Blog Tests related to exercises 4.3-4.6', () => {
   const blogs = [{
     _id: '5a422a851b54a676234d17f7',
     title: 'React patterns',
@@ -50,19 +50,19 @@ describe('Blog Tests', () => {
     likes: 2,
     __v: 0
   }]
-  test('dummy returns one', () => {
+  test('dummy returns one (Exercise 4.3)', () => {
     const blogs = []
 
     const result = listHelper.dummy(blogs)
     expect(result).toBe(1)
   })
 
-  test('when list has only one blog, equals the likes of that', () => {
+  test('when list has only one blog, equals the likes of that (Exercise 4.4)', () => {
     const result = listHelper.totalLikes(blogs)
     expect(result).toBe(36)
   })
 
-  test('Most liked blog from a list of blogs', () => {
+  test('Most liked blog from a list of blogs (Exercise 4.5)', () => {
     const result = listHelper.favoriteBlog(blogs)
     expect(result).toEqual({
       title: 'Canonical string reduction',
@@ -71,7 +71,7 @@ describe('Blog Tests', () => {
     })
   })
 
-  test('Author with most blogs', () => {
+  test('Author with most blogs (Exercise 4.6)', () => {
     const result = listHelper.mostBlogs(blogs)
     expect(result).toEqual({
       author: 'Robert C. Martin', 

@@ -1,41 +1,53 @@
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
-require('dotenv').config()
-
 const app = express()
+require('express-async-errors')
+const serverConfig = require('./serverConfig')
+const middleware = require('./utils/middleware')
+
 app.use(cors())
 app.use(express.json())
 app.use(morgan('tiny'))
 const Blog = require('./models/BlogModel')
 
-app.get('/api/blogs', (request, response, next) => {
-  Blog
-    .find({})
-    .then(blogs => {
-      response.json(blogs)
-    }).catch(error => next(error))
+app.get('/api/blogs', async (request, response) => {
+  const blogs = await Blog.find({})
+  response.status(200).json(blogs)
 })
 
-app.post('/api/blogs', (request, response, next) => {
-  const blog = new Blog(request.body)
-
-  blog
-    .save()
-    .then(result => {
-      response.status(201).json(result)
-    }).catch(error => next(error))
-})
-
-const errorHandler = (error, request, response, next) => {
-
-  if (error) {
-    return response.status(400).send({ error: error })
+app.get('/api/blogs/:id', async (request, response) => {
+  const blog = await Blog.findById(request.params.id)
+  if (blog){
+    response.status(200).json(blog)
   }
-  next(error)
-}
-
-const PORT = process.env.PORT
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+  else{
+    response.status(400).end()
+  }
 })
+
+app.delete('/api/blogs/:id', async (request, response) => {
+  const blog = await Blog.findByIdAndDelete(request.params.id)
+  if (blog){
+    response.status(204).json(blog)
+  }
+  else{
+    response.status(400).end()
+  }
+})
+
+app.post('/api/blogs', async(request, response) => {
+  const blog = new Blog(request.body)
+  const result = await blog.save()
+  response.status(201).json(result)
+})
+
+
+app.use(middleware.errorHandler)
+
+
+app.listen(serverConfig.PORT, () => {
+  console.log(`Server running on port ${serverConfig.PORT}`)
+})
+
+module.exports = app;

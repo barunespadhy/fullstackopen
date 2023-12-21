@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
+const serverConfig = require('../serverConfig')
 mongoose.set('strictQuery', false)
 
-const url = process.env.MONGODB_URI
+const url = serverConfig.MONGODB_URI
 
 console.log('connecting to', url)
 
@@ -14,10 +15,22 @@ mongoose.connect(url)
 
 
 const blogSchema = new mongoose.Schema({
-  title: String,
-  author: String,
-  url: String,
-  likes: Number
+  title: {
+    type: String,
+    required:true
+  },
+  author: {
+    type: String,
+    required:true
+  },
+  url: {
+    type: String,
+    required:true
+  },
+  likes: {
+    type: Number,
+    default: 0
+  }
 })
 
 blogSchema.set('toJSON', {
