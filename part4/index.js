@@ -36,6 +36,23 @@ app.delete('/api/blogs/:id', async (request, response) => {
   }
 })
 
+app.put('/api/blogs/:id', async (request, response) => {
+  const body = request.body
+  const blog = {
+    title: body.title,
+    author: body.author,
+    url: body.blogurl,
+    likes: body.likes
+  }
+  const blogs = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true, runValidators: true, context: 'query'})
+  if (blogs){
+    response.status(204).json(blogs)
+  }
+  else{
+    response.status(400).json(blogs)
+  }
+})
+
 app.post('/api/blogs', async(request, response) => {
   const blog = new Blog(request.body)
   const result = await blog.save()

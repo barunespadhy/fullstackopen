@@ -78,6 +78,35 @@ describe('Blog Tests related to exercises 4.8-4.12', () => {
       .expect(400)
       .expect('Content-Type', /application\/json/)
   })
+
+  test('Delete a blog (Exercise 4.13)', async () => {
+    const response = await blog_test_helper.getBlogs()
+    const idToRemove = response[0].id
+    const blogToRemove = response[0]
+
+    await api
+      .delete(`/api/blogs/${idToRemove}`)
+      .expect(204)
+
+    const blogsAfterDeletion = await blog_test_helper.getBlogs()
+    expect(blog_test_helper.initialBlogs.length - 1)
+    expect(blogsAfterDeletion).not.toContain(blogToRemove)
+  })
+
+  test('Update a blog (Exercise 4.14)', async () => {
+    const blogs = await blog_test_helper.getBlogs()
+    let blogToUpdateID = blogs[0].id
+    let blogToUpdate = blogs[0]
+    blogToUpdate.likes = 10
+    
+    await api
+      .put(`/api/blogs/${blogToUpdateID}`)
+      .send(blogToUpdate)
+      .expect(204)
+
+    const response = await blog_test_helper.getBlogs()
+    expect(response[0].likes).toBe(10)
+  })
 })
 
 afterAll(async () => {
