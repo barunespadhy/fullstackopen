@@ -1,4 +1,4 @@
-const listHelper = require('../utils/list_helper')
+const listHelper = require('../../utils/list_helper')
 
 
 describe('Blog Tests related to exercises 4.3-4.6', () => {
