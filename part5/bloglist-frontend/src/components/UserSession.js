@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from 'jwt-decode'
 import Login from './Login'
 import UserInfo from './UserInfo'
 
@@ -14,15 +14,15 @@ const UserSession = (props) => {
       })
     }
     catch(error){
-      console.log(error)
+      //
     }
   }, [])
   return (
     <div>
       {
         props.userDetails ?
-        <UserInfo setNotification={props.setNotification} userDetails={props.userDetails} setUserDetails={props.setUserDetails}/> :
-        <Login setNotification={props.setNotification} setUserDetails={props.setUserDetails}/>
+          <UserInfo setNotification={props.setNotification} userDetails={props.userDetails} setUserDetails={props.setUserDetails}/> :
+          <Login setNotification={props.setNotification} setUserDetails={props.setUserDetails}/>
       }
     </div>
   )

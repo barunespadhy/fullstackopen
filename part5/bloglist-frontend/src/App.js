@@ -5,7 +5,10 @@ import Notification from './components/Notification'
 
 const App = () => {
   const [userDetails, setUserDetails] = useState(null)
-  const [notification, setNotification] = useState(null)
+  const [notification, setNotification] = useState({
+    notificationClass: '',
+    message:''
+  })
 
   return (
     <div>

@@ -7,18 +7,18 @@ const getAll = () => {
 }
 
 const postBlog = (blogPost, token) => {
-  return axios.post(baseUrl, blogPost, {headers: { Authorization: `Bearer ${token}` }})
+  return axios.post(baseUrl, blogPost, { headers: { Authorization: `Bearer ${token}` } })
 }
 
 const updateBlog = (id, blogObject, token) => {
-  return axios.put(`${baseUrl}/${id}`, blogObject, {headers: { Authorization: `Bearer ${token}` }})
+  return axios.put(`${baseUrl}/${id}`, blogObject, { headers: { Authorization: `Bearer ${token}` } })
 }
 
 const deleteBlog = (id, token) => {
-  return axios.delete(`${baseUrl}/${id}`, {headers: { Authorization: `Bearer ${token}` }})
+  return axios.delete(`${baseUrl}/${id}`, { headers: { Authorization: `Bearer ${token}` } })
 }
 
-export default { 
+export default {
   getAll,
   postBlog,
   updateBlog,

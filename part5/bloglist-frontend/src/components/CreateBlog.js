@@ -1,12 +1,10 @@
-import { useState, useEffect, useRef } from 'react'
-import UserSessionService from '../services/UserSessionService'
-import { jwtDecode } from "jwt-decode";
+import { useState, useRef } from 'react'
 import BlogService from '../services/BlogService'
 import Togglable from './Togglable'
-
+import PropTypes from 'prop-types'
 
 const CreateBlog = (props) => {
-  const [title, setTitle] = useState('') 
+  const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
   const blogFormRef = useRef()
@@ -21,7 +19,7 @@ const CreateBlog = (props) => {
       }, window.localStorage.getItem('loginToken'))
       props.setNotification({
         message: `A new blog ${title} by ${author} added`,
-        notificationClass: "success"
+        notificationClass: 'success'
       })
       props.loadBlogs()
       blogFormRef.current.toggleVisibility()
@@ -29,7 +27,7 @@ const CreateBlog = (props) => {
     catch(error){
       props.setNotification({
         message: error.response.data.error,
-        notificationClass: "error"
+        notificationClass: 'error'
       })
     }
   }
@@ -42,11 +40,16 @@ const CreateBlog = (props) => {
           <div>Title: <input onChange={(event) => setTitle(event.target.value)}/></div>
           <div>Author: <input onChange={(event) => setAuthor(event.target.value)}/></div>
           <div>Url: <input onChange={(event) => setUrl(event.target.value)}/></div>
-          <div><button type="submit">Add</button></div>
+          <div><button type='submit'>Add</button></div>
         </form>
       </Togglable>
     </div>
   )
+}
+
+CreateBlog.propTypes = {
+  loadBlogs: PropTypes.func.isRequired,
+  setNotification: PropTypes.func.isRequired
 }
 
 export default CreateBlog

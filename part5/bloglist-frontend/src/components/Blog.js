@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react'
 import CreateBlog from './CreateBlog'
 import Togglable from './Togglable'
 import BlogService from '../services/BlogService'
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from 'jwt-decode'
+
 
 const Blog = (props) => {
+
   const [blogs, setBlogs] = useState([])
   const currentUser = window.localStorage.getItem('loginToken') ? jwtDecode(window.localStorage.getItem('loginToken')) : 'None'
-  
 
   useEffect(() => {
     if (props.userDetails)
@@ -17,7 +18,7 @@ const Blog = (props) => {
   }, [props.userDetails])
 
   const loadBlogs = () => {
-    let blogList;
+
     BlogService.getAll().then(blogs =>
       setBlogs( (blogs.sort((a, b) => b.likes - a.likes)) )
     )
@@ -26,12 +27,12 @@ const Blog = (props) => {
 
   const handleLike = (blog) => {
     BlogService.updateBlog(blog.id,{
-        title: blog.title,
-        author: blog.author,
-        url: blog.url,
-        likes: blog.likes + 1
-      }, window.localStorage.getItem('loginToken')).then(blogs =>
-        loadBlogs()
+      title: blog.title,
+      author: blog.author,
+      url: blog.url,
+      likes: blog.likes + 1
+    }, window.localStorage.getItem('loginToken')).then(blogs =>
+      loadBlogs()
     )
   }
 
@@ -46,14 +47,15 @@ const Blog = (props) => {
     <div>
 
       {
-        props.userDetails ? 
-        <div>
-          <CreateBlog loadBlogs={loadBlogs} setNotification={props.setNotification}/>
-          <h3>All blogs</h3>
-            {blogs.map(blog =>
-              <div key={blog.id} style={{'borderStyle':'solid', 'padding': '1em', 'marginBottom': '5px'}}>
+        props.userDetails ?
+          <div>
+            <CreateBlog loadBlogs={loadBlogs} setNotification={props.setNotification}/>
+            <h3>All blogs</h3>
+            { blogs.map (blog =>
+              <div key={blog.id} style={{ 'borderStyle':'solid', 'padding': '1em', 'marginBottom': '5px' }}>
                 <p>{blog.title}</p>
-                <Togglable buttonLabel={"Show more"} hideButtonLabel={'Show less'}>
+
+                <Togglable buttonLabel={'Show more'} hideButtonLabel={'Show less'}>
                   <p>{blog.url}</p>
                   <p>{blog.likes} likes <button type='submit' onClick={() => handleLike(blog)}>like</button></p>
                   <p>{blog.author}</p>
@@ -61,14 +63,16 @@ const Blog = (props) => {
                   {blog.user[0].username === currentUser.username ? <button type='submit' onClick={() => handleDelete(blog.id, blog.title, blog.author)}>Remove</button> : ''}
                   <br></br>
                 </Togglable>
-                
+
               </div>
             )}
-        </div> : 
-        <h3>Please login to view/create blogs</h3>
+          </div> :
+          <h3>Please login to view/create blogs</h3>
       }
     </div>
   )
 }
+
+
 
 export default Blog
