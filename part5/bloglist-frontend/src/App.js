@@ -9,12 +9,21 @@ const App = () => {
     notificationClass: '',
     message:''
   })
+  const blogs = [{
+    title: 'Test Blog',
+    author: 'Test Author',
+    url: 'TestURL',
+    user: [{
+      username: 'TestUser'
+    }],
+    likes: 0
+  }]
 
   return (
     <div>
       <Notification notification={notification} setNotification={setNotification}/>
       <UserSession setNotification={setNotification} userDetails={userDetails} setUserDetails={setUserDetails} />
-      <Blog setNotification={setNotification} userDetails={userDetails} setUserDetails={setUserDetails}/>
+      <Blog blogs={blogs} setNotification={setNotification} userDetails={userDetails} setUserDetails={setUserDetails} test={false}/>
     </div>
   )
 }

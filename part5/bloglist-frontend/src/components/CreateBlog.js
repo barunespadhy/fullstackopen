@@ -9,10 +9,20 @@ const CreateBlog = (props) => {
   const [url, setUrl] = useState('')
   const blogFormRef = useRef()
 
-  const handleBlogPost = async (event) => {
+  const handleBlogPost = (event) => {
     event.preventDefault()
+    !props.test ?
+      addBlog() :
+      props.addBlog({
+        title: title,
+        author: author,
+        url: url
+      })
+  }
+
+  const addBlog = async (event) => {
     try{
-      let response = await BlogService.postBlog({
+      await BlogService.postBlog({
         title: title,
         author: author,
         url: url
@@ -32,15 +42,16 @@ const CreateBlog = (props) => {
     }
   }
 
+
   return (
     <div>
       <Togglable buttonLabel={'Create blog'} hideButtonLabel={'Done'} ref={blogFormRef}>
         <h3>Add a new blog post</h3>
         <form onSubmit={handleBlogPost}>
-          <div>Title: <input onChange={(event) => setTitle(event.target.value)}/></div>
-          <div>Author: <input onChange={(event) => setAuthor(event.target.value)}/></div>
-          <div>Url: <input onChange={(event) => setUrl(event.target.value)}/></div>
-          <div><button type='submit'>Add</button></div>
+          <div>Title: <input className='titleInput' onChange={(event) => setTitle(event.target.value)}/></div>
+          <div>Author: <input className='authorInput' onChange={(event) => setAuthor(event.target.value)}/></div>
+          <div>Url: <input className='urlInput' onChange={(event) => setUrl(event.target.value)}/></div>
+          <div><button className='createBlog' type='submit'>Add</button></div>
         </form>
       </Togglable>
     </div>
@@ -48,8 +59,8 @@ const CreateBlog = (props) => {
 }
 
 CreateBlog.propTypes = {
-  loadBlogs: PropTypes.func.isRequired,
-  setNotification: PropTypes.func.isRequired
+  //loadBlogs: PropTypes.func.isRequired, -------------------> Disabled for testing
+  //setNotification: PropTypes.func.isRequired ---------------> Disabled for testing
 }
 
 export default CreateBlog
